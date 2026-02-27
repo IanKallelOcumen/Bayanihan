@@ -9,36 +9,37 @@ public class LowFuelIndicator : MonoBehaviour
     Image image;
     Animation blinkingAnimation;
 
-    GameManager gameManger;
+    GameManager gameManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         image = GetComponent<Image>();
         blinkingAnimation = GetComponent<Animation>();
-        gameManger = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManager = GameManager.Instance;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (gameManger.GetFuelLevel() <= maxWarningLevel && gameManger.GetFuelLevel() > 0f) Blink(true);
+        if (gameManager == null) return;
+        float level = gameManager.GetFuelLevel();
+        if (level <= maxWarningLevel && level > 0f) Blink(true);
         else Blink(false);
     }
 
     void Blink(bool blink)
     {
+        if (image == null) return;
         Color color = image.color;
         if (blink)
-		{
+        {
             color.a = 1f;
-            blinkingAnimation.Play();
-		}
+            if (blinkingAnimation != null) blinkingAnimation.Play();
+        }
         else
-		{
+        {
             color.a = 0f;
-            blinkingAnimation.Stop();
-		}
+            if (blinkingAnimation != null) blinkingAnimation.Stop();
+        }
         image.color = color;
     }
 }

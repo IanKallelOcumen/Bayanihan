@@ -1,12 +1,19 @@
 using UnityEngine;
 
+/// <summary>
+/// Spawns background clouds at random intervals and positions relative to the camera.
+/// </summary>
 public class CloudSpawner : MonoBehaviour
 {
+    [Header("Spawn Settings")]
+    [Tooltip("List of cloud prefabs to spawn randomly.")]
     public GameObject[] cloudPrefabs;
-    public float spawnInterval = 1.5f; // Slower spawning
+    [Tooltip("Time in seconds between spawns.")]
+    public float spawnInterval = 1.5f; 
+    [Tooltip("Horizontal distance ahead of the camera to spawn clouds.")]
     public float spawnDistanceX = 15f; 
     
-    // Height ABOVE the camera top
+    [Header("Height & Scale")]
     public float minHeightFromCam = 3f; 
     public float maxHeightFromCam = 8f;
     
@@ -18,8 +25,16 @@ public class CloudSpawner : MonoBehaviour
 
     void Start()
     {
-        cam = Camera.main.transform;
-        PrewarmSky(); 
+        if (Camera.main != null)
+        {
+            cam = Camera.main.transform;
+            PrewarmSky(); 
+        }
+        else
+        {
+            Debug.LogWarning("CloudSpawner: Main Camera not found!");
+            enabled = false;
+        }
     }
 
     void Update()

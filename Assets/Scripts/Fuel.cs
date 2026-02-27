@@ -11,16 +11,15 @@ public class Fuel : MonoBehaviour
 
     void Start()
     {
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManager = GameManager.Instance;
     }
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.CompareTag(playerTag))
-		{
-            OnPickupEvent.Invoke();
-            gameManager.Refuel();
-            Destroy(gameObject, 2f);
-		}
+		if (!collision.CompareTag(playerTag)) return;
+		OnPickupEvent.Invoke();
+		if (gameManager != null)
+			gameManager.Refuel();
+		Destroy(gameObject, 2f);
 	}
 }

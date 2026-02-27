@@ -4,8 +4,25 @@ using sm = UnityEngine.SceneManagement;
 
 public class SceneManager : MonoBehaviour
 {
+	public static SceneManager Instance { get; private set; }
+
 	[SerializeField] Animation transition;
 	[SerializeField] float transitionTime = 0.1f;
+
+	void Awake()
+	{
+		if (Instance != null && Instance != this)
+		{
+			Destroy(gameObject);
+			return;
+		}
+		Instance = this;
+	}
+
+	void OnDestroy()
+	{
+		if (Instance == this) Instance = null;
+	}
 
 	public void ResetLevel()
 	{
@@ -27,7 +44,8 @@ public class SceneManager : MonoBehaviour
 
 	public IEnumerator LoadScene(int sceneIndex)
 	{
-		transition.PlayQueued("Fade_Start");
+		if (transition != null)
+			transition.PlayQueued("Fade_Start");
 		yield return new WaitForSeconds(transitionTime);
 		sm.SceneManager.LoadScene(sceneIndex);
 	}

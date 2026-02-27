@@ -18,6 +18,26 @@ public class SeamlessSpawner : MonoBehaviour
     void Start()
     {
         cam = Camera.main.transform;
+
+        // --- LEVEL INTEGRATION START ---
+        if (LevelManager.Instance != null)
+        {
+            LevelData data = LevelManager.Instance.GetLevelData(GameSession.SelectedLevel);
+            if (data != null)
+            {
+                // If procedural generation is enabled AND this spawner looks like the ground (parallax ~ 1.0), disable it.
+                if (data.useProceduralGeneration && Mathf.Abs(parallaxFactor - 1.0f) < 0.1f)
+                {
+                    gameObject.SetActive(false);
+                    return; // Stop execution
+                }
+
+                if (data.terrainPrefab != null) layerPrefab = data.terrainPrefab;
+                parallaxFactor = data.parallaxFactor;
+                spriteWidth = data.spriteWidth;
+            }
+        }
+        // --- LEVEL INTEGRATION END ---
         
         // Spawn the first two pieces immediately so there's no gap at start
         SpawnPiece(cam.position.x - 5f); 

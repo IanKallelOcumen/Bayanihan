@@ -19,11 +19,11 @@ public class UIController : MonoBehaviour
     [SerializeField] GameObject gasNormalImage;
     [SerializeField] GameObject gasPressedImage;
     
-    private GameManager gameManager;
+	private GameManager gameManager;
 
 	void Start()
 	{
-		gameManager = FindObjectOfType<GameManager>();
+		gameManager = GameManager.Instance;
 	}
 
 	void Update()
@@ -62,12 +62,14 @@ public class UIController : MonoBehaviour
 
     public void UpdateFuelLevel(float newLevel)
 	{
-        fuelLevelSlider.value = newLevel;
+        if (fuelLevelSlider != null)
+            fuelLevelSlider.value = newLevel;
 	}
 
     public void UpdateCoins(string newScore)
 	{
-        coinsText.text = newScore;
+        if (coinsText != null)
+            coinsText.text = newScore;
 	}
 
 	public void DisplayBrakePressed(bool isPressed)

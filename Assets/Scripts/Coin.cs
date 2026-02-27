@@ -12,16 +12,15 @@ public class Coin : MonoBehaviour
 
 	void Start()
 	{
-		gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+		gameManager = GameManager.Instance;
 	}
 
 	void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.CompareTag(playerTag))
-		{
-			OnPickupEvent.Invoke();
+		if (!collision.CompareTag(playerTag)) return;
+		OnPickupEvent.Invoke();
+		if (gameManager != null)
 			gameManager.AddCoins(value);
-			Destroy(gameObject, 2f);
-		}
+		Destroy(gameObject, 2f);
 	}
 }

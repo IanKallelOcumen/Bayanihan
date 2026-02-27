@@ -12,7 +12,7 @@ public class Death : MonoBehaviour
 
 	void Start()
 	{
-		sceneManager = GameObject.Find("Scene Manager").GetComponent<SceneManager>();
+		sceneManager = SceneManager.Instance ?? FindObjectOfType<SceneManager>();
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -24,6 +24,7 @@ public class Death : MonoBehaviour
 	{
 		OnPlayerDeath.Invoke();
 		yield return new WaitForSeconds(2f);
-		sceneManager.ResetLevel();
+		if (sceneManager != null)
+			sceneManager.ResetLevel();
 	}
 }

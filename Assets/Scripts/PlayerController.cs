@@ -1,32 +1,41 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles player vehicle physics, input processing, and movement logic.
+/// Supports both single car and dual-car control schemes.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(WheelJoint2D))]
 [RequireComponent(typeof(WheelJoint2D))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Required components")]
-    [SerializeField] Rigidbody2D carRigidbody;
-    [SerializeField] Wheel driveWheel;
-    [SerializeField] Wheel secondWheel;
+    [SerializeField] private Rigidbody2D carRigidbody;
+    [SerializeField] private Wheel driveWheel;
+    [SerializeField] private Wheel secondWheel;
 
     [Header("Rotation")]
-    [SerializeField] float onAirRotationSpeed = 8f;
-    [SerializeField] float onGroundRotationSpeed = 1f;
+    [Tooltip("Rotation speed when the car is in the air.")]
+    [SerializeField] private float onAirRotationSpeed = 8f;
+    [Tooltip("Rotation speed when the car is on the ground.")]
+    [SerializeField] private float onGroundRotationSpeed = 1f;
 
-    float brakeInput;
-    float gasInput;
-    float finalInput;
+    private float brakeInput;
+    private float gasInput;
+    private float finalInput;
 
-    float brakeRawInput;
-    float gasRawInput;
-    float finalRawInput;
+    private float brakeRawInput;
+    private float gasRawInput;
+    private float finalRawInput;
 
-    GameManager gameManager;
+    private GameManager gameManager;
 
     void Start()
     {
-        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        gameManager = GameManager.Instance;
+        
+        // Cache Rigidbody if not assigned
+        if (carRigidbody == null) carRigidbody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -36,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (gameManager == null) return;
         if (brakeRawInput == 1f && carRigidbody.linearVelocity.x > 3f)
         {
             Stop();
@@ -80,11 +90,10 @@ public class PlayerController : MonoBehaviour
         secondWheel.Idle();
     }
 
-    // ✅ PUBLIC overload for external callers (DualCarController)
+    // PUBLIC overload for external callers (DualCarController)
     public void Move(float input)
     {
-        if (!gameManager.IsFuel()) return;
-
+        if (gameManager == null || !gameManager.IsFuel()) return;
         driveWheel.Move(input);
         secondWheel.Idle();
     }
@@ -103,5 +112,25 @@ public class PlayerController : MonoBehaviour
     public float GetInput()
     {
         return finalInput;
+    }
+
+    public void ApplyPhysics(float friction)
+    {
+        // Apply friction to wheels
+        if (driveWheel != null) ApplyFrictionToWheel(driveWheel, friction);
+        if (secondWheel != null) ApplyFrictionToWheel(secondWheel, friction);
+    }
+
+    void ApplyFrictionToWheel(Wheel wheel, float friction)
+    {
+        Collider2D col = wheel.GetComponent<Collider2D>();
+        if (col != null)
+        {
+            // Create a copy of the material to avoid modifying the asset
+            PhysicsMaterial2D mat = new PhysicsMaterial2D("LevelFriction");
+            mat.friction = friction;
+            mat.bounciness = 0.2f; // Default bounciness
+            col.sharedMaterial = mat;
+        }
     }
 }

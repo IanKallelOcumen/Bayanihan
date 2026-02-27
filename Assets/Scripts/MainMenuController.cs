@@ -2,17 +2,19 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement; 
 
-public class MenuManager : MonoBehaviour
+/// <summary>
+/// Main menu controller handling UI transitions and scene loading.
+/// Consolidates logic from previous MenuManager and MainMenuController.
+/// </summary>
+public class MainMenuController : MonoBehaviour
 {
     [Header("Panels")]
-    public CanvasGroup mainMenuPanel;
-    public CanvasGroup settingsPanel;
+    [SerializeField] private CanvasGroup mainMenuPanel;
+    [SerializeField] private CanvasGroup settingsPanel;
 
     [Header("Settings")]
-    public float duration = 0.5f;
-    public float slideDistance = 1000f;
-    // This string is correct, provided you use the fix in OnPlayPressed below
-    public string gameSceneName = "GameScene"; 
+    [SerializeField] private float transitionDuration = 0.5f;
+    [SerializeField] private float slideDistance = 1000f;
 
     private void Start()
     {
@@ -30,33 +32,37 @@ public class MenuManager : MonoBehaviour
         if (Time.timeScale != 1f) Time.timeScale = 1f;
     }
 
-    // --- BUTTON EVENTS ---
+    // --- BUTTON EVENTS (Linked in Inspector) ---
 
-    public void OnPlayPressed()
+    public void OnStartGame()
     {
-        // FIX: We explicitly type "UnityEngine.SceneManagement.SceneManager"
-        // This bypasses the error if you accidentally named another script "SceneManager"
-        UnityEngine.SceneManagement.SceneManager.LoadScene(gameSceneName);
+        // Load Level Select scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneNames.LevelSelect);
     }
 
-    public void OnSettingsPressed()
+    public void OnSettings()
     {
-        if (settingsPanel == null) return;
+        if (settingsPanel == null) 
+        {
+            Debug.LogWarning("Settings Panel not assigned!");
+            return;
+        }
         StartCoroutine(Transition(mainMenuPanel, settingsPanel, -1)); 
     }
 
-    public void OnBackPresssed()
+    public void OnBackFromSettings()
     {
         if (mainMenuPanel == null) return;
         StartCoroutine(Transition(settingsPanel, mainMenuPanel, 1));
     }
 
-    public void OnQuitPressed()
+    public void OnExitGame()
     {
         Debug.Log("Quitting Game...");
-        Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
 #endif
     }
 
@@ -83,28 +89,30 @@ public class MenuManager : MonoBehaviour
         RectTransform outRect = outPanel.GetComponent<RectTransform>();
         RectTransform inRect = inPanel.GetComponent<RectTransform>();
 
-        outRect.anchoredPosition = Vector2.zero;
-        inRect.anchoredPosition = new Vector2(slideDistance * direction, 0);
+        if (outRect != null) outRect.anchoredPosition = Vector2.zero;
+        if (inRect != null) inRect.anchoredPosition = new Vector2(slideDistance * direction, 0);
         
         outPanel.interactable = false;
         inPanel.interactable = false;
 
         float timer = 0f;
 
-        while (timer < duration)
+        while (timer < transitionDuration)
         {
             // Use UNSCALED time so animations work even if game logic is paused
             timer += Time.unscaledDeltaTime; 
             
-            float t = timer / duration;
+            float t = timer / transitionDuration;
             float easeT = Mathf.SmoothStep(0, 1, t); 
 
             // Slide & Fade
             outPanel.alpha = Mathf.Lerp(1f, 0f, easeT);
-            outRect.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(-slideDistance * direction, 0), easeT);
+            if (outRect != null) 
+                outRect.anchoredPosition = Vector2.Lerp(Vector2.zero, new Vector2(-slideDistance * direction, 0), easeT);
 
             inPanel.alpha = Mathf.Lerp(0f, 1f, easeT);
-            inRect.anchoredPosition = Vector2.Lerp(new Vector2(slideDistance * direction, 0), Vector2.zero, easeT);
+            if (inRect != null)
+                inRect.anchoredPosition = Vector2.Lerp(new Vector2(slideDistance * direction, 0), Vector2.zero, easeT);
 
             yield return null;
         }
