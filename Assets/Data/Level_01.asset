@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3952ac8d17af724182755e2f13ca435, type: 3}
+  m_Name: Level_01
+  m_EditorClassIdentifier: Assembly-CSharp::LevelData
+  levelName: Green Hills
+  levelIndex: 1
+  description: The beginning of the journey.
+  thumbnail: {fileID: 0}
+  sceneName: Garage
+  requiredStarsToUnlock: 0
+  terrainPrefab: {fileID: 0}
+  parallaxFactor: 1
+  spriteWidth: 20
+  useProceduralGeneration: 1
+  biomeType: 0
+  noiseScale: 0.05
+  noiseAmplitude: 5
+  groundDepth: 10
+  segmentLength: 1
+  initialSegments: 100
+  octaves: 1
+  persistence: 0.5
+  lacunarity: 2
+  coinFrequency: 0.1
+  fuelFrequency: 0.02
+  coinPrefab: {fileID: 0}
+  fuelPrefab: {fileID: 0}
+  gravityScale: 1
+  friction: 1
+  fuelConsumptionRate: 0.05
+  distanceToFinish: 1000

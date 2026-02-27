@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Style src="../Styles/ModernTheme.uss" />
+    <ui:VisualElement name="Root" class="root">
+        <ui:Label text="SELECT LEVEL" class="header-text" />
+        
+        <ui:ScrollView mode="Vertical" class="level-grid" name="LevelGridContainer">
+            <ui:VisualElement name="LevelGrid" style="flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%;" />
+        </ui:ScrollView>
+
+        <ui:Button name="BackBtn" class="modern-button" style="margin-top: 20px; background-color: rgba(255,255,255,0.1);">
+            <ui:Label text="BACK" class="button-label" />
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

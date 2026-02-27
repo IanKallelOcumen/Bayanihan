@@ -1,0 +1,113 @@
+Scene,ObjectType,ObjectName,Path,Status
+DesertScene,Canvas,Canvas,Scene Manager/Canvas,Legacy
+DesertScene,Image,Image,Scene Manager/Canvas/Image,Legacy
+DesertScene,Canvas,Canvas,UI/Canvas,Legacy
+DesertScene,Image,Distance Image,UI/Canvas/Distance/Distance Image,Legacy
+DesertScene,Image,Fuel Image,UI/Canvas/Fuel/Fuel Image,Legacy
+DesertScene,Image,Fill,UI/Canvas/Fuel/Fuel Level Slider/Fill Area/Fill,Legacy
+DesertScene,Image,Background,UI/Canvas/Fuel/Fuel Level Slider/Background,Legacy
+DesertScene,Image,Coins Image,UI/Canvas/Coins/Coins Image,Legacy
+DesertScene,Image,Pause Menu Button,UI/Canvas/Pause Menu Button,Legacy
+DesertScene,Image,Background,UI/Canvas/Pause Menu/Background,Legacy
+DesertScene,Image,Menu,UI/Canvas/Pause Menu/Menu,Legacy
+DesertScene,Image,Resume Button,UI/Canvas/Pause Menu/Menu/Resume Button,Legacy
+DesertScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Resume Button/Icon,Legacy
+DesertScene,Image,Restart Button,UI/Canvas/Pause Menu/Menu/Restart Button,Legacy
+DesertScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Restart Button/Icon,Legacy
+DesertScene,Image,Exit Button,UI/Canvas/Pause Menu/Menu/Exit Button,Legacy
+DesertScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Exit Button/Icon,Legacy
+DesertScene,Image,Close Button,UI/Canvas/Pause Menu/Menu/Close Button,Legacy
+DesertScene,Image,RPM Image,UI/Canvas/Meters/RPM Image,Legacy
+DesertScene,Image,Needle Image,UI/Canvas/Meters/RPM Image/Needle Image,Legacy
+DesertScene,Image,Boost Image,UI/Canvas/Meters/Boost Image,Legacy
+DesertScene,Image,Needle Image,UI/Canvas/Meters/Boost Image/Needle Image,Legacy
+DesertScene,Image,Brake Normal Image,UI/Canvas/Pedals/Brake Normal Image,Legacy
+DesertScene,Image,Brake Pressed Image,UI/Canvas/Pedals/Brake Pressed Image,Legacy
+DesertScene,Image,Gas Normal Image,UI/Canvas/Pedals/Gas Normal Image,Legacy
+DesertScene,Image,Gas Pressed Image,UI/Canvas/Pedals/Gas Pressed Image,Legacy
+DesertScene,Image,Low Fuel Warning Image,UI/Canvas/Low Fuel Warning Image,Legacy
+DesertScene,Text,Distance Text,UI/Canvas/Distance/Distance Text,Legacy
+DesertScene,Text,Distance To Fuel Text,UI/Canvas/Fuel/Fuel Level Slider/Distance To Fuel Text,Legacy
+DesertScene,Text,Coins Text,UI/Canvas/Coins/Coins Text,Legacy
+DesertScene,Text,Text,UI/Canvas/Pause Menu/Menu/Resume Button/Text,Legacy
+DesertScene,Text,Text,UI/Canvas/Pause Menu/Menu/Restart Button/Text,Legacy
+DesertScene,Text,Text,UI/Canvas/Pause Menu/Menu/Exit Button/Text,Legacy
+DesertScene,Button,Pause Menu Button,UI/Canvas/Pause Menu Button,Legacy
+DesertScene,Button,Resume Button,UI/Canvas/Pause Menu/Menu/Resume Button,Legacy
+DesertScene,Button,Restart Button,UI/Canvas/Pause Menu/Menu/Restart Button,Legacy
+DesertScene,Button,Exit Button,UI/Canvas/Pause Menu/Menu/Exit Button,Legacy
+DesertScene,Button,Close Button,UI/Canvas/Pause Menu/Menu/Close Button,Legacy
+DesertScene,Slider,Fuel Level Slider,UI/Canvas/Fuel/Fuel Level Slider,Legacy
+GameScene,Canvas,Canvas,Scene Manager/Canvas,Legacy
+GameScene,Image,Image,Scene Manager/Canvas/Image,Legacy
+GameScene,Canvas,Canvas,UI/Canvas,Legacy
+GameScene,Image,Distance Image,UI/Canvas/Distance/Distance Image,Legacy
+GameScene,Image,Fuel Image,UI/Canvas/Fuel/Fuel Image,Legacy
+GameScene,Image,Fill,UI/Canvas/Fuel/Fuel Level Slider/Fill Area/Fill,Legacy
+GameScene,Image,Background,UI/Canvas/Fuel/Fuel Level Slider/Background,Legacy
+GameScene,Image,Coins Image,UI/Canvas/Coins/Coins Image,Legacy
+GameScene,Image,Pause Menu Button,UI/Canvas/Pause Menu Button,Legacy
+GameScene,Image,Background,UI/Canvas/Pause Menu/Background,Legacy
+GameScene,Image,Menu,UI/Canvas/Pause Menu/Menu,Legacy
+GameScene,Image,Resume Button,UI/Canvas/Pause Menu/Menu/Resume Button,Legacy
+GameScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Resume Button/Icon,Legacy
+GameScene,Image,Restart Button,UI/Canvas/Pause Menu/Menu/Restart Button,Legacy
+GameScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Restart Button/Icon,Legacy
+GameScene,Image,Exit Button,UI/Canvas/Pause Menu/Menu/Exit Button,Legacy
+GameScene,Image,Icon,UI/Canvas/Pause Menu/Menu/Exit Button/Icon,Legacy
+GameScene,Image,Close Button,UI/Canvas/Pause Menu/Menu/Close Button,Legacy
+GameScene,Image,RPM Image,UI/Canvas/Meters/RPM Image,Legacy
+GameScene,Image,Needle Image,UI/Canvas/Meters/RPM Image/Needle Image,Legacy
+GameScene,Image,Boost Image,UI/Canvas/Meters/Boost Image,Legacy
+GameScene,Image,Needle Image,UI/Canvas/Meters/Boost Image/Needle Image,Legacy
+GameScene,Image,Brake Normal Image,UI/Canvas/Pedals/Brake Normal Image,Legacy
+GameScene,Image,Brake Pressed Image,UI/Canvas/Pedals/Brake Pressed Image,Legacy
+GameScene,Image,Gas Normal Image,UI/Canvas/Pedals/Gas Normal Image,Legacy
+GameScene,Image,Gas Pressed Image,UI/Canvas/Pedals/Gas Pressed Image,Legacy
+GameScene,Image,Low Fuel Warning Image,UI/Canvas/Low Fuel Warning Image,Legacy
+GameScene,Text,Distance Text,UI/Canvas/Distance/Distance Text,Legacy
+GameScene,Text,Distance To Fuel Text,UI/Canvas/Fuel/Fuel Level Slider/Distance To Fuel Text,Legacy
+GameScene,Text,Coins Text,UI/Canvas/Coins/Coins Text,Legacy
+GameScene,Text,Text,UI/Canvas/Pause Menu/Menu/Resume Button/Text,Legacy
+GameScene,Text,Text,UI/Canvas/Pause Menu/Menu/Restart Button/Text,Legacy
+GameScene,Text,Text,UI/Canvas/Pause Menu/Menu/Exit Button/Text,Legacy
+GameScene,Button,Pause Menu Button,UI/Canvas/Pause Menu Button,Legacy
+GameScene,Button,Resume Button,UI/Canvas/Pause Menu/Menu/Resume Button,Legacy
+GameScene,Button,Restart Button,UI/Canvas/Pause Menu/Menu/Restart Button,Legacy
+GameScene,Button,Exit Button,UI/Canvas/Pause Menu/Menu/Exit Button,Legacy
+GameScene,Button,Close Button,UI/Canvas/Pause Menu/Menu/Close Button,Legacy
+GameScene,Slider,Fuel Level Slider,UI/Canvas/Fuel/Fuel Level Slider,Legacy
+LevelSelect,Canvas,Canvas,Canvas,Legacy
+LevelSelect,Image,Level1_Button,Canvas/Level1_Button,Legacy
+LevelSelect,Text,Text,Canvas/Level1_Button/Text,Legacy
+LevelSelect,Button,Level1_Button,Canvas/Level1_Button,Legacy
+Main_Menu,Canvas,Canvas,Canvas,Legacy
+Main_Menu,Image,Background,Canvas/Background,Legacy
+Main_Menu,Image,Image,Canvas/Background/Image,Legacy
+Main_Menu,Text,Brand,Canvas/Brand,Legacy
+Main_Menu,Text,playtext,Canvas/Main_Menu_Panel/PlayButton/playtext,Legacy
+Main_Menu,Text,settingtext,Canvas/Main_Menu_Panel/SettingButton/settingtext,Legacy
+Main_Menu,Text,quittext,Canvas/Main_Menu_Panel/QuitButton/quittext,Legacy
+Main_Menu,Text,SoundText,Canvas/Setting_Panel/SoundGroup/SoundText,Legacy
+Main_Menu,Text,Selected,Canvas/Setting_Panel/SoundGroup/Options/Selected,Legacy
+Main_Menu,Text,right_btn,Canvas/Setting_Panel/SoundGroup/Options/right_btn,Legacy
+Main_Menu,Text,left_btn,Canvas/Setting_Panel/SoundGroup/Options/left_btn,Legacy
+Main_Menu,Text,BackText,Canvas/Setting_Panel/BackGroup/BackText,Legacy
+Main_Menu,Button,PlayButton,Canvas/Main_Menu_Panel/PlayButton,Legacy
+Main_Menu,Button,SettingButton,Canvas/Main_Menu_Panel/SettingButton,Legacy
+Main_Menu,Button,QuitButton,Canvas/Main_Menu_Panel/QuitButton,Legacy
+Main_Menu,Button,Options,Canvas/Setting_Panel/SoundGroup/Options,Legacy
+Main_Menu,Button,right_btn,Canvas/Setting_Panel/SoundGroup/Options/right_btn,Legacy
+Main_Menu,Button,left_btn,Canvas/Setting_Panel/SoundGroup/Options/left_btn,Legacy
+Main_Menu,Button,BackGroup,Canvas/Setting_Panel/BackGroup,Legacy
+Main_Menu,Button,BackText,Canvas/Setting_Panel/BackGroup/BackText,Legacy
+Victory,Canvas,Canvas,Canvas,Legacy
+Victory,Image,NextLevel_Button,Canvas/NextLevel_Button,Legacy
+Victory,Image,Menu_Button,Canvas/Menu_Button,Legacy
+Victory,Text,Victory_Text,Canvas/Victory_Text,Legacy
+Victory,Text,Victory_Text,Canvas/Victory_Text,Legacy
+Victory,Text,Score_Text,Canvas/Score_Text,Legacy
+Victory,Text,Text,Canvas/NextLevel_Button/Text,Legacy
+Victory,Text,Text,Canvas/Menu_Button/Text,Legacy
+Victory,Button,NextLevel_Button,Canvas/NextLevel_Button,Legacy
+Victory,Button,Menu_Button,Canvas/Menu_Button,Legacy

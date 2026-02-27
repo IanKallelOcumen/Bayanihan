@@ -9,13 +9,33 @@ public class LevelSelectController : MonoBehaviour
     public void LoadGarageLevel(int level)
     {
         GameSession.SelectedLevel = level;
-        // In the new system, we might want to load a "Game" scene directly if Garage isn't the gameplay scene
-        // But assuming Garage is where the game starts or vehicle is selected
-        SceneManager.LoadScene(garageSceneName);
+        
+        // Try to load Level Data if available
+        if (LevelManager.Instance != null)
+        {
+            LevelData data = LevelManager.Instance.GetLevelData(level);
+            if (data != null && !string.IsNullOrEmpty(data.sceneName))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(data.sceneName);
+                return;
+            }
+        }
+        
+        // Fallback: Construct name (Level_01, Level_02...)
+        string sceneName = $"Level_{level:00}";
+        if (Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+        }
+        else
+        {
+            Debug.LogWarning($"Scene {sceneName} not found, loading default {garageSceneName}");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(garageSceneName);
+        }
     }
 
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene(mainMenuSceneName);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(mainMenuSceneName);
     }
 }

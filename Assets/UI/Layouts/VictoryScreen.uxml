@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Style src="../Styles/ModernTheme.uss" />
+    <ui:VisualElement name="Root" class="root">
+        <ui:VisualElement name="Card" class="card" style="height: 500px;">
+            <ui:Label text="VICTORY!" name="HeaderText" class="header-text" />
+            
+            <ui:VisualElement name="StarsContainer" style="flex-direction: row; margin-bottom: 20px;">
+                <ui:VisualElement name="Star1" class="star star--large" />
+                <ui:VisualElement name="Star2" class="star star--large" />
+                <ui:VisualElement name="Star3" class="star star--large" />
+            </ui:VisualElement>
+
+            <ui:Label text="Score: 0" name="ScoreText" class="score-text" />
+            
+            <ui:VisualElement name="ButtonContainer" class="button-container">
+                <ui:Button name="RetryBtn" class="modern-button" style="background-color: rgb(255, 152, 0); width: 60px;">
+                    <ui:Label text="↺" class="button-label" style="font-size: 32px;" />
+                </ui:Button>
+                <ui:Button name="NextLevelBtn" class="modern-button">
+                    <ui:Label text="NEXT LEVEL" class="button-label" />
+                </ui:Button>
+                <ui:Button name="MenuBtn" class="modern-button" style="background-color: rgb(255, 87, 87); width: 60px;">
+                    <ui:Label text="≡" class="button-label" style="font-size: 32px;" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

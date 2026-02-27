@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
 	void Start()
 	{
 		Time.timeScale = 1.0f; // Ensure time is running
-		uiController = FindObjectOfType<UIController>();
+		uiController = FindFirstObjectByType<UIController>();
 		if (uiController != null)
 			uiController.UpdateCoins(PlayerPrefs.GetInt("coins", 0).ToString());
 		
@@ -71,14 +71,30 @@ public class GameManager : MonoBehaviour
                  // Spawn Procedural Terrain Generator if needed
                   if (data.useProceduralGeneration)
                   {
-                      GameObject terrainGen = new GameObject("ProceduralTerrainGenerator");
-                      TerrainGenerator tg = terrainGen.AddComponent<TerrainGenerator>();
+                      // Check if one already exists in scene
+                      TerrainGenerator tg = FindFirstObjectByType<TerrainGenerator>();
+                      if (tg == null)
+                      {
+                          GameObject terrainGen = new GameObject("ProceduralTerrainGenerator");
+                          tg = terrainGen.AddComponent<TerrainGenerator>();
+                      }
+                      
+                      // Configure based on biome
+                      // (Assuming TerrainGenerator has public config methods or reads LevelData)
+                      // For now, we just ensure it has the player reference
                       if (player != null) tg.SetPlayer(player);
                   }
              }
          }
         // --- LEVEL INTEGRATION END ---
 	}
+
+    // Public Getters for UI
+    public int GetCurrentDistance() { return currentDistance; }
+    public int GetNextLevelDistance() { return nextLevelDistance; }
+    public int GetBestDistance() { return bestDistance; }
+    public int GetCurrentLevel() { return currentLevel; }
+    public bool IsFuel() { return fuelLevel > 0; }
 
 	void OnDestroy()
 	{
@@ -98,48 +114,46 @@ public class GameManager : MonoBehaviour
 			uiController.UpdateFuelLevel(fuelLevel);
 	}
 
-	void UpdateProgression()
-	{
-		if (player == null) return;
-		
-		// Calculate current distance
-		currentDistance = Mathf.RoundToInt(player.position.x - startPosition.x);
-		
-		// Check for level progression (Level Complete)
-		if (currentDistance >= nextLevelDistance)
-		{
+    void UpdateProgression()
+    {
+        if (player == null) return;
+        currentDistance = (int)(player.position.x - startPosition.x);
+        if (currentDistance > bestDistance)
+        {
+            bestDistance = currentDistance;
+            PlayerPrefs.SetInt("BestDistance", bestDistance);
+        }
+
+        if (currentDistance >= nextLevelDistance)
+        {
+            // Level Complete
+            Debug.Log("Level Complete!");
+            
+            // Calculate Stars based on Fuel
+            int stars = 1;
+            if (fuelLevel > 0.5f) stars = 2;
+            if (fuelLevel > 0.8f) stars = 3;
+            
+            GameSession.LastLevelScore = (int)(fuelLevel * 1000) + currentDistance;
+            GameSession.LastLevelStars = stars;
+            
+            // Unlock Next Level
             if (LevelManager.Instance != null)
             {
                 LevelManager.Instance.UnlockLevel(currentLevel + 1);
-                Debug.Log("Level " + currentLevel + " Complete! Unlocked Level " + (currentLevel + 1));
-                
-                // Show Victory or Load Next Level
-                // For now, let's load the Victory scene
-                UnityEngine.SceneManagement.SceneManager.LoadScene(SceneNames.Victory);
+                LevelManager.Instance.SaveLevelStars(currentLevel, stars);
             }
-            else
-            {
-                // Fallback to old infinite behavior if no LevelManager
-			    currentLevel++;
-			    nextLevelDistance = currentLevel * Mathf.RoundToInt(levelDistanceIncrement);
-			    OnLevelUp();
-            }
-		}
-		
-		// Update best distance
-		if (currentDistance > bestDistance)
-		{
-			bestDistance = currentDistance;
-			PlayerPrefs.SetInt("BestDistance", bestDistance);
-		}
-	}
-
-	void OnLevelUp()
-	{
-		// Optional: Add bonus coins or fuel on level up
-		AddCoins(50 * currentLevel);
-		Debug.Log("Level Up! Now at level " + currentLevel);
-	}
+            
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Victory");
+            enabled = false; // Stop updating
+        }
+        
+        if (fuelLevel <= 0 && Mathf.Abs(player.GetComponent<Rigidbody2D>().linearVelocity.x) < 0.1f)
+        {
+            // Game Over (Out of Fuel and stopped)
+             UnityEngine.SceneManagement.SceneManager.LoadScene("Main_Menu");
+        }
+    }
 
 	public void Refuel()
 	{
@@ -151,37 +165,12 @@ public class GameManager : MonoBehaviour
 		return fuelLevel;
 	}
 
-	public bool IsFuel()
-	{
-		return fuelLevel > 0 ? true : false;
-	}
-
 	public void AddCoins(int coinsToAdd)
 	{
 		var coins = PlayerPrefs.GetInt("coins", 0) + coinsToAdd;
 		PlayerPrefs.SetInt("coins", coins);
 		if (uiController != null)
 			uiController.UpdateCoins(coins.ToString());
-	}
-
-	public int GetCurrentDistance()
-	{
-		return currentDistance;
-	}
-
-	public int GetCurrentLevel()
-	{
-		return currentLevel;
-	}
-
-	public int GetBestDistance()
-	{
-		return bestDistance;
-	}
-
-	public int GetNextLevelDistance()
-	{
-		return nextLevelDistance;
 	}
 
 	public void Pause()

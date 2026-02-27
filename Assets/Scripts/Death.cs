@@ -12,7 +12,7 @@ public class Death : MonoBehaviour
 
 	void Start()
 	{
-		sceneManager = SceneManager.Instance ?? FindObjectOfType<SceneManager>();
+		sceneManager = SceneManager.Instance ?? FindFirstObjectByType<SceneManager>();
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)

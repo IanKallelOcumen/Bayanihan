@@ -1,16 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
+/// <summary>
+/// Manages level progression, unlocking, and data persistence.
+/// </summary>
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
 
-    [SerializeField] private List<LevelData> levels;
-    
-    [Header("Default Assets")]
-    [SerializeField] private GameObject defaultCoinPrefab;
-    [SerializeField] private GameObject defaultFuelPrefab;
-    [SerializeField] private Material defaultTerrainMaterial; // For procedural terrain
+    [Header("Configuration")]
+    [SerializeField] private List<LevelData> allLevels;
+    [SerializeField] private int defaultUnlockedLevels = 1;
+
+    private const string PREF_UNLOCKED_LEVEL = "LevelUnlocked_";
+    private const string PREF_LEVEL_STARS = "LevelStars_";
+    private const string PREF_LEVEL_SCORE = "LevelScore_";
 
     void Awake()
     {
@@ -21,110 +26,93 @@ public class LevelManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        if (levels == null || levels.Count == 0)
-        {
-            CreateDefaultLevels();
-        }
-    }
-
-    public Material GetDefaultTerrainMaterial()
-    {
-        return defaultTerrainMaterial;
-    }
-
-    private void CreateDefaultLevels()
-    {
-        levels = new List<LevelData>();
-
-        // Level 1: Easy
-        LevelData l1 = ScriptableObject.CreateInstance<LevelData>();
-        l1.levelName = "Green Hills";
-        l1.levelIndex = 1;
-        l1.description = "A nice drive through the hills.";
-        l1.gravityScale = 1.0f;
-        l1.friction = 1.0f;
-        l1.fuelConsumptionRate = 0.05f;
-        l1.distanceToFinish = 500;
-        l1.useProceduralGeneration = true;
-        l1.noiseScale = 0.03f;
-        l1.noiseAmplitude = 3.0f;
-        l1.segmentLength = 1.0f;
-        l1.coinFrequency = 0.15f;
-        l1.fuelFrequency = 0.03f;
-        l1.coinPrefab = defaultCoinPrefab;
-        l1.fuelPrefab = defaultFuelPrefab;
-        levels.Add(l1);
-
-        // Level 2: Medium
-        LevelData l2 = ScriptableObject.CreateInstance<LevelData>();
-        l2.levelName = "Desert Dunes";
-        l2.levelIndex = 2;
-        l2.description = "Hot and sandy. Watch your fuel!";
-        l2.gravityScale = 1.2f;
-        l2.friction = 0.8f;
-        l2.fuelConsumptionRate = 0.08f;
-        l2.distanceToFinish = 1000;
-        l2.useProceduralGeneration = true;
-        l2.noiseScale = 0.06f;
-        l2.noiseAmplitude = 6.0f;
-        l2.segmentLength = 1.0f;
-        l2.coinFrequency = 0.1f;
-        l2.fuelFrequency = 0.02f;
-        l2.coinPrefab = defaultCoinPrefab;
-        l2.fuelPrefab = defaultFuelPrefab;
-        levels.Add(l2);
-
-        // Level 3: Hard
-        LevelData l3 = ScriptableObject.CreateInstance<LevelData>();
-        l3.levelName = "Moon Base";
-        l3.levelIndex = 3;
-        l3.description = "Low gravity madness.";
-        l3.gravityScale = 0.4f;
-        l3.friction = 0.5f;
-        l3.fuelConsumptionRate = 0.03f;
-        l3.distanceToFinish = 1500;
-        l3.useProceduralGeneration = true;
-        l3.noiseScale = 0.04f;
-        l3.noiseAmplitude = 10.0f;
-        l3.segmentLength = 1.0f;
-        l3.coinFrequency = 0.2f;
-        l3.fuelFrequency = 0.015f;
-        l3.coinPrefab = defaultCoinPrefab;
-        l3.fuelPrefab = defaultFuelPrefab;
-        levels.Add(l3);
-    }
-
-    public LevelData GetLevelData(int levelIndex)
-    {
-        // 1-based index to 0-based list
-        int index = levelIndex - 1;
-        if (index >= 0 && index < levels.Count)
-        {
-            return levels[index];
-        }
         
-        Debug.LogWarning($"Level {levelIndex} not found! Returning first level.");
-        return levels.Count > 0 ? levels[0] : null;
+        // Ensure levels are sorted by index
+        if (allLevels != null)
+        {
+            allLevels = allLevels.OrderBy(l => l.levelIndex).ToList();
+        }
     }
 
+    /// <summary>
+    /// Gets the total number of levels configured.
+    /// </summary>
     public int GetTotalLevels()
     {
-        return levels.Count;
+        return allLevels != null ? allLevels.Count : 0;
     }
 
+    /// <summary>
+    /// Retrieves LevelData for a specific level index (1-based).
+    /// </summary>
+    public LevelData GetLevelData(int levelIndex)
+    {
+        if (allLevels == null || levelIndex < 1 || levelIndex > allLevels.Count)
+            return null;
+        
+        return allLevels.Find(l => l.levelIndex == levelIndex);
+    }
+
+    /// <summary>
+    /// Checks if a level is unlocked. Level 1 is always unlocked.
+    /// </summary>
+    public bool IsLevelUnlocked(int levelIndex)
+    {
+        if (levelIndex <= defaultUnlockedLevels) return true;
+        return PlayerPrefs.GetInt(PREF_UNLOCKED_LEVEL + levelIndex, 0) == 1;
+    }
+
+    /// <summary>
+    /// Unlocks a level.
+    /// </summary>
     public void UnlockLevel(int levelIndex)
     {
-        int currentUnlocked = PlayerPrefs.GetInt("UnlockedLevel", 1);
-        if (levelIndex > currentUnlocked)
+        if (levelIndex > allLevels.Count) return; // Don't unlock non-existent levels
+        
+        PlayerPrefs.SetInt(PREF_UNLOCKED_LEVEL + levelIndex, 1);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// Saves the stars earned for a level if it's a new high.
+    /// </summary>
+    public void SaveLevelStars(int levelIndex, int stars)
+    {
+        int currentStars = GetLevelStars(levelIndex);
+        if (stars > currentStars)
         {
-            PlayerPrefs.SetInt("UnlockedLevel", levelIndex);
+            PlayerPrefs.SetInt(PREF_LEVEL_STARS + levelIndex, stars);
             PlayerPrefs.Save();
         }
     }
 
-    public bool IsLevelUnlocked(int levelIndex)
+    public int GetLevelStars(int levelIndex)
     {
-        return levelIndex <= PlayerPrefs.GetInt("UnlockedLevel", 1);
+        return PlayerPrefs.GetInt(PREF_LEVEL_STARS + levelIndex, 0);
+    }
+    
+    public void SaveLevelScore(int levelIndex, int score)
+    {
+        int currentScore = GetLevelScore(levelIndex);
+        if (score > currentScore)
+        {
+            PlayerPrefs.SetInt(PREF_LEVEL_SCORE + levelIndex, score);
+            PlayerPrefs.Save();
+        }
+    }
+    
+    public int GetLevelScore(int levelIndex)
+    {
+        return PlayerPrefs.GetInt(PREF_LEVEL_SCORE + levelIndex, 0);
+    }
+
+    /// <summary>
+    /// Resets all progress (Debug only).
+    /// </summary>
+    public void ResetProgress()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        Debug.Log("Progress Reset");
     }
 }

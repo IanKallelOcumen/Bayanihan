@@ -4,9 +4,9 @@
 /// </summary>
 public static class SceneNames
 {
+    /// <summary>Bayanihan menu scene filename is Main_Menu.unity.</summary>
     public const string MainMenu = "Main_Menu";
-    public const string LevelSelect = "LevelSelect"; // User needs to create this or add to MainMenu
-    public const string Garage = "Garage"; // Placeholder if needed
-    public const string Game = "GameScene"; // Matches actual file
-    public const string Victory = "Victory"; // Placeholder
+    public const string LevelSelect = "LevelSelect";
+    public const string Garage = "Garage";
+    public const string Victory = "Victory";
 }

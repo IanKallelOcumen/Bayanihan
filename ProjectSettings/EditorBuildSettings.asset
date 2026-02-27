@@ -9,10 +9,20 @@ EditorBuildSettings:
     path: Assets/Scenes/Main_Menu.unity
     guid: 0e98250c3ef8a1f44ad746032d292f24
   - enabled: 1
+    path: Assets/Scenes/LevelSelect.unity
+    guid: 14ea10ea54586144fbb4b819c89e2a9d
+  - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/DesertScene.unity
     guid: d00282f66c2d4d1ab56ac377cf42031c
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/Level_03.unity
+    guid: 99c6c3aacda83024f8047b2a627b1813
+  - enabled: 1
+    path: Assets/Scenes/Victory.unity
+    guid: bc0c585e864302a4b915e7f2d512a104
+  m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
   m_UseUCBPForAssetBundles: 0

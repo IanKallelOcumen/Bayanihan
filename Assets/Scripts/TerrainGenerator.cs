@@ -10,7 +10,7 @@ public class TerrainGenerator : MonoBehaviour
 
     [Header("Debug / Status")]
     [SerializeField] private float currentX = 0f;
-    [SerializeField] private int totalSegmentsGenerated = 0;
+    // [SerializeField] private int totalSegmentsGenerated = 0; // Removed unused warning
     
     private Mesh mesh;
     private MeshFilter meshFilter;
@@ -39,6 +39,56 @@ public class TerrainGenerator : MonoBehaviour
     }
     private List<TerrainSegment> segments = new List<TerrainSegment>();
 
+    [Header("Procedural HeightMap")]
+    [SerializeField] private TerrainData terrainData; // Unity TerrainData Reference
+    private float[,] heightMap;
+
+    void Awake()
+    {
+        // 8. Fix terrain generation: ensure that the Terrain component’s TerrainData is not null
+        Terrain terrain = GetComponent<Terrain>();
+        if (terrain != null)
+        {
+            if (terrain.terrainData == null)
+            {
+                Debug.LogError("TerrainData missing on Terrain component!");
+            }
+            else
+            {
+                terrainData = terrain.terrainData;
+            }
+        }
+        
+        // Procedural HeightMap Generation
+        GenerateHeightMap();
+    }
+
+    private void GenerateHeightMap()
+    {
+        // Produces a new 513x513 height map
+        int resolution = 513;
+        heightMap = new float[resolution, resolution];
+        
+        float seed = Random.Range(0f, 1000f);
+        
+        for (int x = 0; x < resolution; x++)
+        {
+            for (int y = 0; y < resolution; y++)
+            {
+                // Simple Perlin Noise for height map
+                float xCoord = (float)x / resolution * 10f + seed;
+                float yCoord = (float)y / resolution * 10f + seed;
+                heightMap[x, y] = Mathf.PerlinNoise(xCoord, yCoord);
+            }
+        }
+
+        if (terrainData != null)
+        {
+            terrainData.heightmapResolution = resolution;
+            terrainData.SetHeights(0, 0, heightMap);
+        }
+    }
+
     public void SetPlayer(Transform player)
     {
         this.playerTransform = player;
@@ -49,9 +99,13 @@ public class TerrainGenerator : MonoBehaviour
         meshFilter = GetComponent<MeshFilter>();
         edgeCollider = GetComponent<EdgeCollider2D>();
         
-        mesh = new Mesh();
-        mesh.MarkDynamic(); // Optimize for frequent updates
-        meshFilter.mesh = mesh;
+        // If we are using Mesh-based terrain (2D), initialize it
+        if (meshFilter != null)
+        {
+            mesh = new Mesh();
+            mesh.MarkDynamic(); // Optimize for frequent updates
+            meshFilter.mesh = mesh;
+        }
 
         // Find player if not assigned
         if (playerTransform == null)
@@ -64,17 +118,24 @@ public class TerrainGenerator : MonoBehaviour
         if (LevelManager.Instance != null)
         {
             currentLevelData = LevelManager.Instance.GetLevelData(GameSession.SelectedLevel);
+            
+            // If terrainMaterial is missing, try to find a default one
             if (terrainMaterial == null)
             {
-                terrainMaterial = LevelManager.Instance.GetDefaultTerrainMaterial();
-                // If still null, try to load a default
-                if (terrainMaterial == null)
+                // Fallback to a default sprite material if no specific material is assigned
+                Shader shader = Shader.Find("Sprites/Default");
+                if (shader != null) 
                 {
-                    // Fallback to a default sprite material
-                    Shader shader = Shader.Find("Sprites/Default");
-                    if (shader != null) terrainMaterial = new Material(shader);
+                    terrainMaterial = new Material(shader);
                 }
             }
+            
+            // Apply Ground Color from LevelData
+            if (terrainMaterial != null)
+            {
+                terrainMaterial.color = currentLevelData.groundColor;
+            }
+            
             if (meshFilter.GetComponent<MeshRenderer>().sharedMaterial == null)
             {
                 meshFilter.GetComponent<MeshRenderer>().sharedMaterial = terrainMaterial;
@@ -115,11 +176,32 @@ public class TerrainGenerator : MonoBehaviour
         float amp = currentLevelData.noiseAmplitude;
         float step = currentLevelData.segmentLength;
         float depth = currentLevelData.groundDepth;
+        
+        // Multi-layer noise (Fractal Brownian Motion)
+        int octaves = currentLevelData.octaves;
+        float persistence = currentLevelData.persistence;
+        float lacunarity = currentLevelData.lacunarity;
 
         for (int i = 0; i < segmentCount; i++)
         {
             float x = currentX;
-            float y = Mathf.PerlinNoise((x + seedX) * scale, 0) * amp;
+            float y = 0;
+            float amplitude = amp;
+            float frequency = scale;
+            
+            // Fractal Noise Loop
+            for (int o = 0; o < octaves; o++)
+            {
+                // Use different seed offset per octave to avoid symmetry
+                float noiseVal = Mathf.PerlinNoise((x + seedX + (o * 1000f)) * frequency, 0);
+                // Map 0..1 to -1..1 for more interesting terrain? Or keep 0..1 for ground.
+                // Let's keep 0..1 but center it if needed. 
+                // Standard Perlin is 0..1. 
+                y += noiseVal * amplitude;
+
+                amplitude *= persistence;
+                frequency *= lacunarity;
+            }
 
             // Create Segment Data
             TerrainSegment seg = new TerrainSegment
@@ -130,7 +212,7 @@ public class TerrainGenerator : MonoBehaviour
             };
             segments.Add(seg);
 
-            // Spawn Features (Coins/Fuel)
+            // Spawn Features (Coins/Fuel/Obstacles)
             SpawnFeatures(x, y, currentLevelData);
 
             currentX += step;
